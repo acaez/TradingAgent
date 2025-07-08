@@ -6,19 +6,21 @@ from stocks.portfolio import GAFAM
 from stocks.get_data import get_stock_data
 from .calculate_signals import calculate_signals
 
-def analyze_detailed(symbol):
+def analyze_detailed(symbol, sheets_manager=None):  # CORRECTION: Ajouter sheets_manager
     if symbol not in GAFAM:
         print(f"❌ '{symbol}' n'existe pas dans notre portefeuille")
         print("📋 Symboles disponibles:", ", ".join(GAFAM.keys()))
         return
     
+    company_name = GAFAM[symbol]  # CORRECTION: Définir company_name
+    
     print(f"🔍 ANALYSE DÉTAILLÉE - {symbol}")
     print("=" * 60)
-    print(f"🏢 Société: {GAFAM[symbol]}")
+    print(f"🏢 Société: {company_name}")
     print("=" * 60)
     
     print("📥 Récupération des données...")
-    data = get_stock_data(symbol)
+    data = get_stock_data(symbol, days=252)  # CORRECTION: Utiliser days au lieu de period
     
     if data is None:
         print("❌ Impossible de récupérer les données")
@@ -29,51 +31,75 @@ def analyze_detailed(symbol):
         print("❌ Pas assez de données pour l'analyse")
         return
     
-    print("\n💰 INFORMATIONS PRINCIPALES:")
-    print("-" * 60)
-    print(f"Prix actuel: ${analysis['price']:.2f}")
-    print(f"Moyenne 20 jours: ${analysis['ma20']:.2f}")
-    if analysis['ma50']:
-        print(f"Moyenne 50 jours: ${analysis['ma50']:.2f}")
+    # Affichage détaillé
+    current_price = analysis['price']
+    decision = analysis['decision']
+    signals = analysis['signals']
+    signal_count = analysis['signal_count']
     
-    print("\n🚦 SIGNAUX DE TRADING:")
-    print("-" * 60)
-    print(f"Décision: {analysis['decision']}")
-    print(f"Signaux actifs: {analysis['signal_count']}/3")
+    print(f"💰 PRIX ACTUEL: ${current_price:.2f}")
+    print(f"📊 VOLUME: {data['Volume'].iloc[-1]:,.0f}")
     
-    if analysis['signals']:
-        print("✅ Signaux positifs:")
-        for signal in analysis['signals']:
-            print(f"   • {signal}")
+    # Statistiques supplémentaires
+    high_52w = data['High'].rolling(window=252).max().iloc[-1]
+    low_52w = data['Low'].rolling(window=252).min().iloc[-1]
+    change_1d = ((current_price - data['Close'].iloc[-2]) / data['Close'].iloc[-2]) * 100
+    change_5d = ((current_price - data['Close'].iloc[-6]) / data['Close'].iloc[-6]) * 100 if len(data) > 5 else 0
+    
+    print(f"📈 Plus haut 52 semaines: ${high_52w:.2f}")
+    print(f"📉 Plus bas 52 semaines: ${low_52w:.2f}")
+    print(f"🔄 Variation 1 jour: {change_1d:+.2f}%")
+    print(f"🔄 Variation 5 jours: {change_5d:+.2f}%")
+    
+    print("\n🎯 SIGNAUX DE TRADING:")
+    print("-" * 30)
+    for i, signal in enumerate(signals, 1):
+        print(f"  {i}. {signal}")
+    
+    print(f"\n📊 FORCE DU SIGNAL: {signal_count}/3")
+    
+    # Recommandation avec explication
+    print(f"\n💡 RECOMMANDATION: {decision}")
+    print("-" * 30)
+    
+    if "ACHETER" in decision:
+        print("🟢 Les signaux techniques sont favorables à l'achat")
+        print("   • Tendance haussière confirmée")
+        print("   • Moment opportun pour entrer en position")
+    elif "VENDRE" in decision:
+        print("🔴 Les signaux techniques suggèrent la vente")
+        print("   • Tendance baissière détectée")
+        print("   • Risque de correction à court terme")
     else:
-        print("❌ Aucun signal positif")
+        print("🟡 Position d'attente recommandée")
+        print("   • Signaux mixtes ou neutres")
+        print("   • Surveiller l'évolution avant de prendre position")
     
-    print("\n📊 INFORMATIONS SUPPLÉMENTAIRES:")
-    print("-" * 60)
+    # Niveaux de support et résistance basiques
+    recent_data = data.tail(20)
+    support = recent_data['Low'].min()
+    resistance = recent_data['High'].max()
     
-    last_30_days = data.tail(30)
-    highest_price = last_30_days['High'].max()
-    lowest_price = last_30_days['Low'].min()
+    print(f"\n📊 NIVEAUX TECHNIQUES:")
+    print(f"   🔻 Support: ${support:.2f}")
+    print(f"   🔺 Résistance: ${resistance:.2f}")
     
-    print(f"Prix le plus haut (30j): ${highest_price:.2f}")
-    print(f"Prix le plus bas (30j): ${lowest_price:.2f}")
+    # Send to Google Sheets if available
+    if sheets_manager:
+        try:
+            analysis_data = {
+                'company': company_name,
+                'price': f"{current_price:.2f}",
+                'rsi': 'N/A',
+                'macd': 'N/A',
+                'signal': ', '.join(signals),
+                'recommendation': decision,
+                'volume': f"{data['Volume'].iloc[-1]:.0f}",
+                'change_percent': f"{change_1d:.2f}%"
+            }
+            sheets_manager.append_analysis(symbol, analysis_data, analysis_type="Detailed")
+            print(f"\n✅ Analyse sauvegardée dans Google Sheets")
+        except Exception as e:
+            print(f"\n⚠️  Erreur Google Sheets: {e}")
     
-    performance = ((analysis['price'] - lowest_price) / lowest_price) * 100
-    print(f"Performance depuis le plus bas: +{performance:.1f}%")
-    
-    distance_from_high = ((highest_price - analysis['price']) / analysis['price']) * 100
-    print(f"Distance du plus haut: -{distance_from_high:.1f}%")
-    
-    avg_volume = data['Volume'].tail(10).mean()
-    print(f"Volume moyen (10j): {avg_volume:,.0f}")
-    
-    print("\n💡 CONSEIL SIMPLE:")
-    print("-" * 60)
-    if analysis['signal_count'] == 3:
-        print("🟢 Tous les signaux sont positifs - Bon moment pour acheter")
-    elif analysis['signal_count'] == 2:
-        print("🟡 Signaux mixtes - Attendre une confirmation")
-    elif analysis['signal_count'] == 1:
-        print("🟠 Peu de signaux positifs - Prudence recommandée")
-    else:
-        print("🔴 Aucun signal positif - Éviter d'acheter maintenant")
+    print("\n" + "=" * 60)
