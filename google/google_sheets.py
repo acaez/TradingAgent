@@ -6,7 +6,6 @@ from googleapiclient.discovery import build
 
 class GoogleSheetsManager:
     def __init__(self, credentials_file='credentials.json'):
-        """Initialize Google Sheets connection"""
         self.credentials_file = credentials_file
         self.service = None
         self.sheet_id = None

@@ -17,13 +17,10 @@ def analyze_quick(sheets_manager=None):
         
         data = get_stock_data(symbol)
         analysis = calculate_signals(data)
-        
         if analysis: 
-            # Calcul de la variation en pourcentage
             change_1d = 0
             if len(data) > 1:
                 change_1d = ((analysis['price'] - data['Close'].iloc[-2]) / data['Close'].iloc[-2]) * 100
-            
             result = {
                 'Symbol': symbol,
                 'Name': name,
@@ -33,8 +30,6 @@ def analyze_quick(sheets_manager=None):
                 'Change': change_1d
             }
             results.append(result)
-            
-            # Send to Google Sheets if available
             if sheets_manager:
                 try:
                     analysis_data = {
@@ -50,8 +45,6 @@ def analyze_quick(sheets_manager=None):
                     sheets_manager.append_analysis(symbol, analysis_data, analysis_type="Quick")
                 except Exception as e:
                     print(f"⚠️  Erreur Google Sheets pour {symbol}: {e}")
-    
-    # Affichage des résultats
     print("\n📈 RÉSULTATS:")
     print("-" * 80)
     print(f"{'Symbol':<6} | {'Name':<20} | {'Price':<8} | {'Change':<8} | {'Decision':<15} | {'Signals'}")
@@ -64,7 +57,6 @@ def analyze_quick(sheets_manager=None):
         print(f"{result['Symbol']:<6} | {result['Name']:<20} | ${result['Price']:<7.2f} | "
               f"{change_color}{result['Change']:+5.1f}% | {decision_icon}{result['Decision']:<14} | {result['Signals']}")
     
-    # Résumé
     buy_count = sum(1 for r in results if "ACHETER" in r['Decision'])
     sell_count = sum(1 for r in results if "VENDRE" in r['Decision'])
     wait_count = sum(1 for r in results if "ATTENDRE" in r['Decision'])

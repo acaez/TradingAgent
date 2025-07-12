@@ -6,21 +6,21 @@ from stocks.portfolio import GAFAM
 from stocks.get_data import get_stock_data
 from .calculate_signals import calculate_signals
 
-def analyze_detailed(symbol, sheets_manager=None):  # CORRECTION: Ajouter sheets_manager
+def analyze_detailed(symbol, sheets_manager=None):
     if symbol not in GAFAM:
         print(f"❌ '{symbol}' n'existe pas dans notre portefeuille")
         print("📋 Symboles disponibles:", ", ".join(GAFAM.keys()))
         return
     
-    company_name = GAFAM[symbol]  # CORRECTION: Définir company_name
+    company_name = GAFAM[symbol]
     
     print(f"🔍 ANALYSE DÉTAILLÉE - {symbol}")
-    print("=" * 60)
+    print("=" * 80)
     print(f"🏢 Société: {company_name}")
-    print("=" * 60)
+    print("=" * 80)
     
     print("📥 Récupération des données...")
-    data = get_stock_data(symbol, days=252)  # CORRECTION: Utiliser days au lieu de period
+    data = get_stock_data(symbol, days=252)
     
     if data is None:
         print("❌ Impossible de récupérer les données")
@@ -30,8 +30,7 @@ def analyze_detailed(symbol, sheets_manager=None):  # CORRECTION: Ajouter sheets
     if analysis is None:
         print("❌ Pas assez de données pour l'analyse")
         return
-    
-    # Affichage détaillé
+
     current_price = analysis['price']
     decision = analysis['decision']
     signals = analysis['signals']
@@ -40,7 +39,6 @@ def analyze_detailed(symbol, sheets_manager=None):  # CORRECTION: Ajouter sheets
     print(f"💰 PRIX ACTUEL: ${current_price:.2f}")
     print(f"📊 VOLUME: {data['Volume'].iloc[-1]:,.0f}")
     
-    # Statistiques supplémentaires
     high_52w = data['High'].rolling(window=252).max().iloc[-1]
     low_52w = data['Low'].rolling(window=252).min().iloc[-1]
     change_1d = ((current_price - data['Close'].iloc[-2]) / data['Close'].iloc[-2]) * 100
@@ -52,7 +50,7 @@ def analyze_detailed(symbol, sheets_manager=None):  # CORRECTION: Ajouter sheets
     print(f"🔄 Variation 5 jours: {change_5d:+.2f}%")
     
     print("\n🎯 SIGNAUX DE TRADING:")
-    print("-" * 30)
+    print("-" * 40)
     for i, signal in enumerate(signals, 1):
         print(f"  {i}. {signal}")
     
@@ -60,7 +58,7 @@ def analyze_detailed(symbol, sheets_manager=None):  # CORRECTION: Ajouter sheets
     
     # Recommandation avec explication
     print(f"\n💡 RECOMMANDATION: {decision}")
-    print("-" * 30)
+    print("-" * 40)
     
     if "ACHETER" in decision:
         print("🟢 Les signaux techniques sont favorables à l'achat")
@@ -84,7 +82,6 @@ def analyze_detailed(symbol, sheets_manager=None):  # CORRECTION: Ajouter sheets
     print(f"   🔻 Support: ${support:.2f}")
     print(f"   🔺 Résistance: ${resistance:.2f}")
     
-    # Send to Google Sheets if available
     if sheets_manager:
         try:
             analysis_data = {
@@ -102,4 +99,4 @@ def analyze_detailed(symbol, sheets_manager=None):  # CORRECTION: Ajouter sheets
         except Exception as e:
             print(f"\n⚠️  Erreur Google Sheets: {e}")
     
-    print("\n" + "=" * 60)
+    print("\n" + "=" * 80)
