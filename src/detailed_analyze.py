@@ -2,17 +2,17 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'stocks'))
 
-from stocks.portfolio import GAFAM
+from stocks.portfolio import PERSO
 from stocks.get_data import get_stock_data
 from .calculate_signals import calculate_signals
 
 def analyze_detailed(symbol, sheets_manager=None):
-    if symbol not in GAFAM:
+    if symbol not in PERSO:
         print(f"❌ '{symbol}' n'existe pas dans notre portefeuille")
-        print("📋 Symboles disponibles:", ", ".join(GAFAM.keys()))
+        print("📋 Symboles disponibles:", ", ".join(PERSO.keys()))
         return
     
-    company_name = GAFAM[symbol]
+    company_name = PERSO[symbol]
     
     print(f"🔍 ANALYSE DÉTAILLÉE - {symbol}")
     print("=" * 80)

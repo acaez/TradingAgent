@@ -46,6 +46,17 @@ class GoogleSheetsInterface:
         }
         return self.manager.append_analysis(symbol, analysis_data, analysis_type="Quick")
     
+    def append_analysis(self, symbol, analysis_data, analysis_type="Quick", sheet_name="Trading_Analysis"):
+        """
+        Méthode de compatibilité pour append_analysis.
+        Redirige vers le manager.
+        """
+        if not self.is_configured:
+            print("⚠️  Sheet non configuré")
+            return False
+        
+        return self.manager.append_analysis(symbol, analysis_data, analysis_type, sheet_name)
+    
     def get_trading_summary(self):
         if not self.is_configured:
             return None

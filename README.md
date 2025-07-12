@@ -1,4 +1,4 @@
-# 📊 Trading Agent Simple - GAFAM
+# 📊 Trading Agent Simple - PERSO
 
 Un outil Python simple pour analyser les actions GAFAM (Apple, Google, Microsoft, Amazon, Meta).
 

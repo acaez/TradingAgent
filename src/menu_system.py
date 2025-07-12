@@ -36,20 +36,20 @@ def handle_quick_analysis(analyze_quick, sheets_manager):
     except Exception as e:
         print(f"❌ Erreur lors de l'analyse rapide: {e}")
 
-def handle_detailed_analysis(analyze_detailed, GAFAM, sheets_manager):
+def handle_detailed_analysis(analyze_detailed, PERSO, sheets_manager):
     
     print("\n🔍 Analyse détaillée")
     print("=" * 80)
     print("📋 Actions disponibles:")
-    for symbol, name in GAFAM.items():
+    for symbol, name in PERSO.items():
         print(f"   • {symbol}: {name}")
     while True:
         symbol = input("\n👉 Symbole à analyser: ").strip().upper()
         if not symbol:
             print("❌ Veuillez entrer un symbole.")
             continue
-        if symbol in GAFAM:
-            print(f"\n🔍 Analyse détaillée de {symbol} ({GAFAM[symbol]})...")
+        if symbol in PERSO:
+            print(f"\n🔍 Analyse détaillée de {symbol} ({PERSO[symbol]})...")
             try:
                 analyze_detailed(symbol, sheets_manager)
                 print("✅ Analyse détaillée terminée!")
@@ -61,7 +61,7 @@ def handle_detailed_analysis(analyze_detailed, GAFAM, sheets_manager):
                     break
         else:
             print(f"❌ Symbole '{symbol}' non trouvé.")
-            print("💡 Symboles disponibles:", ", ".join(GAFAM.keys()))
+            print("💡 Symboles disponibles:", ", ".join(PERSO.keys()))
             retry = input("🔄 Voulez-vous réessayer? (y/n): ").strip().lower()
             if retry != 'y':
                 break
@@ -71,14 +71,14 @@ def run_main_menu(modules, sheets_manager):
     print("\n🎯 Application prête à utiliser!")
     analyze_quick = modules['analyze_quick']
     analyze_detailed = modules['analyze_detailed']
-    GAFAM = modules['GAFAM']
+    PERSO = modules['PERSO']
     while True:
         display_menu()
         choice = get_user_choice()
         if choice == '1':
             handle_quick_analysis(analyze_quick, sheets_manager)
         elif choice == '2':
-            handle_detailed_analysis(analyze_detailed, GAFAM, sheets_manager)
+            handle_detailed_analysis(analyze_detailed, PERSO, sheets_manager)
         elif choice == '3':
             print("\n👋 Au revoir !")
             break
