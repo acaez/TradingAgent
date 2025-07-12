@@ -9,7 +9,7 @@ from datetime import datetime
 def setup_paths():
     """Configure les chemins d'accès pour les modules."""
     base_dir = os.path.dirname(os.path.dirname(__file__))  # Remonter au dossier parent
-    paths_to_add = ['src', 'stocks', 'google']
+    paths_to_add = ['src', 'stocks', 'google_integration']
     
     for path in paths_to_add:
         full_path = os.path.join(base_dir, path)
@@ -39,8 +39,8 @@ def import_modules():
             import googleapiclient.discovery
             
             # Si OK, importer nos modules
-            from google.sheets_manager import GoogleSheetsManager
-            from google.google_sheets import GoogleSheetsInterface
+            from google_integration.sheets_manager import GoogleSheetsManager
+            from google_integration.google_sheets import GoogleSheetsInterface
             
             google_sheets_available = True
             print("✅ Module Google Sheets chargé avec succès")
