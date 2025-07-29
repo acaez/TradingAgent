@@ -22,7 +22,7 @@ def import_modules():
     """Importe tous les modules nécessaires."""
     try:
         # Imports principaux
-        from stocks.portfolio import PERSO
+        from stocks.portfolio import PERSO, BIGPHARMA, SMALLPHARMA
         from stocks.get_data import get_stock_data
         from src.calculate_signals import calculate_signals
         from src.quick_analyze import analyze_quick
@@ -55,6 +55,8 @@ def import_modules():
         
         return {
             'PERSO': PERSO,
+            'BIGPHARMA': BIGPHARMA,
+            'SMALLPHARMA': SMALLPHARMA,
             'get_stock_data': get_stock_data,
             'calculate_signals': calculate_signals,
             'analyze_quick': analyze_quick,
@@ -81,7 +83,7 @@ def print_header():
     print("=" * 80)
     print("🎯 TRADING AGENT SIMPLE")
     print("=" * 80)
-    print("📊 Portefeuille: PERSO")
+    print("📊 Portefeuilles disponibles: PERSO, BIGPHARMA, SMALLPHARMA")
     print(f"⏰ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 80)
 
@@ -122,7 +124,7 @@ def initialize_app():
     
     # Afficher le statut des modules
     print("📦 Modules chargés:")
-    print(f"   ✅ Stocks: {bool(modules['PERSO'])}")
+    print(f"   ✅ Portefeuilles: PERSO ({len(modules['PERSO'])} stocks), BIGPHARMA ({len(modules['BIGPHARMA'])} stocks), SMALLPHARMA ({len(modules['SMALLPHARMA'])} stocks)")
     print(f"   ✅ Analyse: {bool(modules['analyze_quick'])}")
     print(f"   {'✅' if modules['google_sheets_available'] else '⚠️ '} Google Sheets: {modules['google_sheets_available']}")
     

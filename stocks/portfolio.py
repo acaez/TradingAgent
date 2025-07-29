@@ -15,5 +15,29 @@ PERSO = {
     'INOV': 'Inovent Biologics',
     'NFLX': 'Netflix',
     'GOOGL': 'Alphabet (Class A)',
-    'GME': 'GameStop'
+    'GME': 'GameStop',
+    'BYD': 'BYD Company',
+    'UBER': 'Uber Technologies',
+}
+
+BIGPHARMA = {
+    'LLY': 'Eli Lilly',
+    'JNJ': 'Johnson & Johnson',
+    'ABVC': 'ABVC BioPharma',
+    'NVO': 'Novo Nordisk',
+    'PFE': 'Pfizer',
+    'NVS': 'Novavax',
+    'MRK': 'Merck & Co.',
+    'AZN': 'AstraZeneca',
+    'VRTX': 'Vertex Pharmaceuticals',
+    'GSK': 'GlaxoSmithKline',
+}
+
+SMALLPHARMA = {
+    'INOV': 'Inovent Biologics',
+    'RKT': 'Rocket Pharmaceuticals',
+    'VERV': 'Verve Therapeutics',
+    'EPRX': 'Eupraxia Pharmaceuticals',
+    'HEM': 'Hemogenyx Pharmaceuticals',
+    'DRUG' : 'Bright Minds Biosciences',
 }

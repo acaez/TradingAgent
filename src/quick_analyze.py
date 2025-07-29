@@ -2,17 +2,16 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'stocks'))
 
-from stocks.portfolio import PERSO
 from stocks.get_data import get_stock_data
 from .calculate_signals import calculate_signals
 
-def analyze_quick(sheets_manager=None):
-    print("🚀 ANALYSE RAPIDE - PERSO")
+def analyze_quick(portfolio_name, portfolio, sheets_manager=None):
+    print(f"🚀 ANALYSE RAPIDE - {portfolio_name}")
     print("=" * 80)
     
     results = []
     
-    for symbol, name in PERSO.items():
+    for symbol, name in portfolio.items():
         print(f"📊 Analyse de {symbol}...")
         
         data = get_stock_data(symbol)
