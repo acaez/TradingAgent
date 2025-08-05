@@ -16,7 +16,7 @@ PERSO = {
     'NFLX': 'Netflix',
     'GOOGL': 'Alphabet (Class A)',
     'GME': 'GameStop',
-    'BYD': 'BYD Company',
+    'BYDDY': 'BYD Company',
     'UBER': 'Uber Technologies',
 }
 
